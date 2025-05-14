@@ -1,0 +1,130 @@
+﻿@model List<Order>
+@{
+    ViewData["Title"] = "Список заказов";
+    var currentUser = ViewBag.CurrentUser as string ?? "Уфа";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>@ViewData["Title"] - @currentUser</h2>
+        <div>
+            <a asp-action="Create" asp-route-currentUser="@currentUser" class="btn btn-yellow me-2">
+                <i class="fas fa-plus"></i> Новый заказ
+            </a>
+            <a asp-action="HiddenOrders" asp-route-currentUser="@currentUser" class="btn btn-warning me-2">
+                <i class="fas fa-eye-slash"></i> Скрытые заказы
+            </a>
+            <div class="btn-group">
+                <button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="fas fa-user"></i> @currentUser
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { currentUser = "Уфа" })">Уфа</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { currentUser = "Грибки" })">Грибки</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get">
+                <input type="hidden" name="currentUser" value="@currentUser" />
+                <div class="row">
+                    <div class="col-md-5">
+                        <input type="text" name="searchString"
+                               value="@ViewData["CurrentFilter"]"
+                               class="form-control"
+                               placeholder="Поиск по номеру заказа или грузоместу">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-yellow">
+                            <i class="fas fa-search"></i> Поиск
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-warning">
+            Заказы не найдены. Проблемы:
+            <ul>
+                <li>Нет заказов для СЦ @currentUser</li>
+                <li>Все заказы скрыты</li>
+            </ul>
+            <a asp-action="Create" asp-route-currentUser="@currentUser" class="btn btn-sm btn-yellow">
+                Создать первый заказ
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Номер</th>
+                        <th>Грузоместо</th>
+                        <th>Откуда</th>
+                        <th>Куда</th>
+                        <th>Дата</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>@order.OrderNumber</td>
+                            <td>@order.CargoNumber</td>
+                            <td>@order.OutboundSC</td>
+                            <td>@order.InboundSC</td>
+                            <td>@order.CreatedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="Edit" asp-route-id="@order.Id"
+                                       asp-route-currentUser="@currentUser"
+                                       class="btn btn-primary" title="Редактировать">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form asp-action="ToggleVisibility" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@order.Id" />
+                                        <input type="hidden" name="currentUser" value="@currentUser" />
+                                        <button type="submit" class="btn @(order.IsHidden ? "btn-success" : "btn-warning")"
+                                                title="@(order.IsHidden ? "Показать" : "Скрыть")">
+                                            <i class="fas @(order.IsHidden ? "fa-eye" : "fa-eye-slash")"></i>
+                                        </button>
+                                    </form>
+                                    <form asp-action="Delete" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@order.Id" />
+                                        <input type="hidden" name="currentUser" value="@currentUser" />
+                                        <button type="submit" class="btn btn-danger" title="Удалить"
+                                                onclick="return confirm('Вы уверены, что хотите удалить этот заказ?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@functions {
+    public string GetStatusBadgeClass(OrderStatus status)
+    {
+        return status switch
+        {
+            OrderStatus.InProgress => "bg-warning",
+            OrderStatus.Completed => "bg-success",
+            OrderStatus.Cancelled => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}

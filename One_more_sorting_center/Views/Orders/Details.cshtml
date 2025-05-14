@@ -1,0 +1,26 @@
+﻿@using One_more_sorting_center.Helpers
+@model Order
+@{
+    ViewData["Title"] = "Детали заказа";
+    var currentUser = Context.Request.Query["currentUser"];
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h3>@ViewData["Title"]</h3>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <!-- Все поля заказа -->
+                <dt class="col-sm-3">Статус:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge @ViewHelpers.GetStatusBadgeClass(Model.Status)">
+                        @Model.Status
+                    </span>
+                </dd>
+            </dl>
+            <a asp-action="Index" asp-route-currentUser="@currentUser" class="btn btn-primary">Назад</a>
+        </div>
+    </div>
+</div>

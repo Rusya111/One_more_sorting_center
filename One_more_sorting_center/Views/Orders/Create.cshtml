@@ -1,0 +1,114 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "Создание заказа";
+    var currentUser = ViewBag.CurrentUser as string;
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h3>@ViewData["Title"]</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <input type="hidden" asp-for="UserSC" value="@currentUser" />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="OrderNumber" class="form-label"></label>
+                            <input asp-for="OrderNumber" class="form-control" required>
+                            <span asp-validation-for="OrderNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CargoNumber" class="form-label"></label>
+                            <input asp-for="CargoNumber" class="form-control" required>
+                            <span asp-validation-for="CargoNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CreatedDate" class="form-label"></label>
+                            <input asp-for="CreatedDate" class="form-control"
+                                   value="@DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm")">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="OutboundSC" class="form-label"></label>
+                            <select asp-for="OutboundSC" class="form-select" required
+                                    asp-items="@(new SelectList(ViewBag.SortingCenters))">
+                                <option value="">Выберите СЦ</option>
+                            </select>
+                            <span asp-validation-for="OutboundSC" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="InboundSC" class="form-label"></label>
+                            <select asp-for="InboundSC" class="form-select" required
+                                    asp-items="@(new SelectList(ViewBag.SortingCenters))">
+                                <option value="">Выберите СЦ</option>
+                            </select>
+                            <span asp-validation-for="InboundSC" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="Status" class="form-label"></label>
+                                <select asp-for="Status" class="form-select" required
+                                        asp-items="Html.GetEnumSelectList<OrderStatus>()">
+                                    <option value="">Выберите статус</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ProblemType" class="form-label"></label>
+                            <select asp-for="ProblemType" class="form-select" required
+                                    asp-items="Html.GetEnumSelectList<IssueType>()">
+                                <option value="">Выберите тип проблемы</option>
+                            </select>
+                            <span asp-validation-for="ProblemType" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-yellow">Создать</button>
+                    <a asp-action="Index" asp-route-currentUser="@currentUser" class="btn btn-secondary">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Валидация при отправке
+            $('form').submit(function(e) {
+                $('.is-invalid').removeClass('is-invalid');
+                let isValid = true;
+
+                $('[required]').each(function() {
+                    if (!$(this).val()) {
+                        $(this).addClass('is-invalid');
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    $('button[type="submit"]').prop('disabled', false);
+                } else {
+                    $('button[type="submit"]').prop('disabled', true)
+                        .html('<i class="fas fa-spinner fa-spin"></i> Сохранение...');
+                }
+            });
+        });
+    </script>
+}

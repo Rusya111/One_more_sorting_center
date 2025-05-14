@@ -1,0 +1,92 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "Редактирование заказа";
+    var currentUser = ViewBag.CurrentUser as string;
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h3>@ViewData["Title"]</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" name="currentUser" value="@ViewBag.CurrentUser" />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="OrderNumber" class="form-label"></label>
+                            <input asp-for="OrderNumber" class="form-control" required>
+                            <span asp-validation-for="OrderNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CargoNumber" class="form-label"></label>
+                            <input asp-for="CargoNumber" class="form-control" required>
+                            <span asp-validation-for="CargoNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="OutboundSC" class="form-label"></label>
+                            <select asp-for="OutboundSC" class="form-select" required
+                                    asp-items="@(new SelectList(ViewBag.SortingCenters))">
+                                <option value="">Выберите СЦ</option>
+                            </select>
+                            <span asp-validation-for="OutboundSC" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="InboundSC" class="form-label"></label>
+                            <select asp-for="InboundSC" class="form-select" required
+                                    asp-items="@(new SelectList(ViewBag.SortingCenters))">
+                                <option value="">Выберите СЦ</option>
+                            </select>
+                            <span asp-validation-for="InboundSC" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Status" class="form-label"></label>
+                            <select asp-for="Status" class="form-select" required
+                                    asp-items="Html.GetEnumSelectList<OrderStatus>()">
+                                <option value="">Выберите статус</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="ProblemType" class="form-label"></label>
+                            <select asp-for="ProblemType" class="form-select" required
+                                    asp-items="Html.GetEnumSelectList<IssueType>()">
+                                <option value="">Выберите проблему</option>
+                            </select>
+                            <span asp-validation-for="ProblemType" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-yellow">
+                        Сохранить
+                    </button>
+                    <a asp-action="Index" asp-route-currentUser="@currentUser" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Отмена
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+ 
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
