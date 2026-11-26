@@ -6,7 +6,6 @@ namespace One_more_sorting_center.Data
     {
         public static void Initialize(AppDbContext context)
         {
-            context.Database.EnsureCreated();
 
             if (!context.Orders.Any())
             {
