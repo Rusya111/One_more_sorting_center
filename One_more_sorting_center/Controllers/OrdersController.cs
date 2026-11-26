@@ -24,7 +24,7 @@ namespace One_more_sorting_center.Controllers
         public IActionResult Index(string currentUser, string searchString)
         {
             currentUser ??= "Уфа";
-            ViewBag.CurrentUser = currentUser;
+            ViewBag.SortingCenters = _sortingCenters;
             ViewData["CurrentFilter"] = searchString;
 
             var orders = _context.Orders

@@ -19,8 +19,10 @@
                     <i class="fas fa-user"></i> @currentUser
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="@Url.Action("Index", new { currentUser = "Уфа" })">Уфа</a></li>
-                    <li><a class="dropdown-item" href="@Url.Action("Index", new { currentUser = "Грибки" })">Грибки</a></li>
+                    @foreach (var sc in ViewBag.SortingCenters as List<string> ?? new List<string>())
+    {
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { currentUser = sc })">@sc</a></li>
+    }
                 </ul>
             </div>
         </div>
