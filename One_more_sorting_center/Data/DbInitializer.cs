@@ -6,7 +6,6 @@ namespace One_more_sorting_center.Data
     {
         public static void Initialize(AppDbContext context)
         {
-            context.Database.EnsureCreated();
 
             if (!context.Orders.Any())
             {
@@ -22,7 +21,7 @@ namespace One_more_sorting_center.Data
                         ProblemType = IssueType.Duplicate,
                         UserSC = "Уфа",
                         CreatedDate = DateTime.UtcNow,
-                        IsHidden = true
+                        IsHidden = false
                     },
                     new Order {
                         OrderNumber = "UF-1002",
@@ -46,7 +45,7 @@ namespace One_more_sorting_center.Data
                         ProblemType = IssueType.StuckInStorage,
                         UserSC = "Грибки",
                         CreatedDate = DateTime.UtcNow,
-                        IsHidden = true
+                        IsHidden = false
                     },
                     new Order {
                         OrderNumber = "GR-2002",

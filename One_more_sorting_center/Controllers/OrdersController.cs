@@ -24,7 +24,7 @@ namespace One_more_sorting_center.Controllers
         public IActionResult Index(string currentUser, string searchString)
         {
             currentUser ??= "Уфа";
-            ViewBag.CurrentUser = currentUser;
+            ViewBag.SortingCenters = _sortingCenters;
             ViewData["CurrentFilter"] = searchString;
 
             var orders = _context.Orders
@@ -77,6 +77,7 @@ namespace One_more_sorting_center.Controllers
             // Сохраняем параметры для View
             ViewData["DateSort"] = sortOrder == "date" ? "date_desc" : "date";
             ViewData["CurrentFilter"] = searchString;
+            ViewBag.SortingCenters = _sortingCenters;
 
             var orders = _context.Orders
                 .Where(o => o.UserSC == currentUser && o.IsHidden);

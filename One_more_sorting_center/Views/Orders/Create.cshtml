@@ -26,12 +26,6 @@
                             <input asp-for="CargoNumber" class="form-control" required>
                             <span asp-validation-for="CargoNumber" class="text-danger"></span>
                         </div>
-
-                        <div class="mb-3">
-                            <label asp-for="CreatedDate" class="form-label"></label>
-                            <input asp-for="CreatedDate" class="form-control"
-                                   value="@DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm")">
-                        </div>
                     </div>
 
                     <div class="col-md-6">
@@ -88,13 +82,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // Валидация при отправке
-            $('form').submit(function(e) {
+        $(document).ready(function () {
+            $('form').submit(function (e) {
                 $('.is-invalid').removeClass('is-invalid');
                 let isValid = true;
 
-                $('[required]').each(function() {
+                $('[required]').each(function () {
                     if (!$(this).val()) {
                         $(this).addClass('is-invalid');
                         isValid = false;
